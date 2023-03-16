@@ -34,6 +34,12 @@ function AutoComplete({ data }: AutoCompleteProps)  {
     setInputValue(e.target.value);
   };
 
+  const handleSuggestionClick = (index: number) => {
+    setInputValue(matches[index]);
+    setMatches([]);
+    inputRef.current?.focus();
+  };
+
   return (
     <div>
       <input
@@ -45,12 +51,12 @@ function AutoComplete({ data }: AutoCompleteProps)  {
         className="px-1"
       />
       {matches.length > 0 && (
-        <ul className="p-1 mt-2 bg-white">
-          {matches.map((match) => (
+        <ul className="mt-2 bg-white">
+          {matches.map((match, index) => (
             <li
               key={match}
             >
-              {match}
+              <button className="w-full px-1 text-left" onClick={() => handleSuggestionClick(index)}>{match}</button>
             </li>
           ))}
         </ul>
