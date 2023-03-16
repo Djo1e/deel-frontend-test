@@ -1,6 +1,6 @@
 import type { NextPage } from "next";
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import citiesJSON from "../cities.json";
 import { AutoComplete } from "../components/AutoComplete";
 
