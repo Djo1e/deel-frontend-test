@@ -1,35 +1,28 @@
-import { useEffect, useRef, useState } from "react";
-
-interface AutoCompleteProps {
-  data: string[];
-}
+import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 
 interface Match {
   highlightedText: string;
   remainingText: string;
 }
 
-export function AutoComplete({ data }: AutoCompleteProps) {
-  const [inputValue, setInputValue] = useState("");
-  const [matches, setMatches] = useState<Match[]>([]);
+interface AutoCompleteProps {
+  options: Match[];
+  input: string;
+  setInput: Dispatch<SetStateAction<string>>;
+  isLoading?: boolean;
+  placeholder?: string;
+}
+
+export function AutoComplete({
+  options,
+  input,
+  setInput,
+  isLoading,
+  placeholder,
+}: AutoCompleteProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [isFocused, setIsFocused] = useState(false);
   const [activeIndex, setActiveIndex] = useState(-1);
-
-  const fetchMatches = async (query: string): Promise<Match[]> => {
-    if (query === "") {
-      return data.map((item) => ({
-        highlightedText: "",
-        remainingText: item,
-      }));
-    }
-    return data
-      .filter((item) => item.toLowerCase().startsWith(query.toLowerCase()))
-      .map((item) => ({
-        highlightedText: item.slice(0, query.length),
-        remainingText: item.slice(query.length),
-      }));
-  };
 
   const handleClickOutside = (e: MouseEvent) => {
     if (
@@ -51,19 +44,6 @@ export function AutoComplete({ data }: AutoCompleteProps) {
     };
   }, []);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const results = await fetchMatches(inputValue);
-      setMatches(results);
-    };
-
-    if (isFocused || inputValue !== "") {
-      fetchData();
-    } else {
-      setMatches([]);
-    }
-  }, [inputValue, isFocused]);
-
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     const key = e.key;
     setIsFocused(true);
@@ -71,20 +51,19 @@ export function AutoComplete({ data }: AutoCompleteProps) {
     switch (key) {
       case "ArrowDown":
         e.preventDefault();
-        setActiveIndex((prev) => (prev + 1) % matches.length);
+        setActiveIndex((prev) => (prev + 1) % options.length);
         break;
       case "ArrowUp":
         e.preventDefault();
-        setActiveIndex((prev) => (prev - 1 + matches.length) % matches.length);
+        setActiveIndex((prev) => (prev - 1 + options.length) % options.length);
         break;
       case "Enter":
         e.preventDefault();
         if (activeIndex >= 0) {
-          setInputValue(
-            matches[activeIndex].highlightedText +
-              matches[activeIndex].remainingText
+          setInput(
+            options[activeIndex].highlightedText +
+              options[activeIndex].remainingText
           );
-          setMatches([]);
           setActiveIndex(-1);
         }
         setIsFocused(false);
@@ -92,14 +71,9 @@ export function AutoComplete({ data }: AutoCompleteProps) {
     }
   };
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setInputValue(e.target.value);
-  };
-
   const handleSuggestionClick = (index: number) => {
-    const match = matches[index].highlightedText + matches[index].remainingText;
-    setInputValue(match);
-    setMatches([]);
+    const match = options[index].highlightedText + options[index].remainingText;
+    setInput(match);
     setActiveIndex(-1);
     setIsFocused(false);
     inputRef.current?.focus();
@@ -110,40 +84,41 @@ export function AutoComplete({ data }: AutoCompleteProps) {
       <input
         id="input"
         ref={inputRef}
-        value={inputValue}
-        onChange={handleInputChange}
+        value={input}
+        onChange={(e) => setInput(e.target.value)}
         onFocus={() => setIsFocused(true)}
         onBlur={() => setIsFocused(false)}
         onKeyDown={handleKeyDown}
-        className="px-1"
-        autoComplete="off"
+        className="h-12 px-2 text-2xl rounded w-72"
+        placeholder={placeholder}
       />
-      {isFocused && matches.length > 0 ? (
+      {isFocused && options.length > 0 ? (
         <ul
-          className="absolute w-full p-0.5 mt-2 bg-white rounded-sm"
+          className="absolute w-full p-1 mt-2 overflow-y-auto bg-white rounded-sm min-h-20 max-h-80"
           id="suggestion-list"
         >
-          {matches.map((match, index) => (
+          {options.map((option, index) => (
             <li
-              key={`${match.highlightedText}${match.remainingText}`}
-              className={
-                index === activeIndex ? "bg-[#15357a] brightness-125" : ""
-              }
+              key={`${option.highlightedText}${option.remainingText}`}
+              className={index === activeIndex ? "bg-[#ED6A5A]" : ""}
             >
               <button
                 id="suggestion-item"
-                className={`w-full px-1 text-left ${
-                  index === activeIndex ? "text-white" : "text-current"
-                }`}
+                className="w-full px-1 text-left"
                 onClick={() => handleSuggestionClick(index)}
                 onMouseDown={(e) => e.preventDefault()}
               >
-                <strong>{match.highlightedText}</strong>
-                {match.remainingText}
+                <strong>{option.highlightedText}</strong>
+                {option.remainingText}
               </button>
             </li>
           ))}
         </ul>
+      ) : null}
+      {input !== "" && options.length === 0 ? (
+        <div className="absolute w-full p-1 mt-2 overflow-y-scroll bg-white rounded-sm min-h-20 max-h-60">
+          {isLoading ? "Loading..." : "No options"}
+        </div>
       ) : null}
     </div>
   );
