@@ -9,27 +9,44 @@ interface Match {
   remainingText: string;
 }
 
+interface CountryResponse {
+  name: { common: string };
+}
+
+const API_ENDPOINT = "https://restcountries.com/v3.1/all";
+
 const Home: NextPage = () => {
   const [inputValue, setInputValue] = useState("");
   const [options, setOptions] = useState<Match[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [data, setData] = useState<CountryResponse[]>([]);
 
-  const debouncedInputValue = useDebounce(inputValue, 300);
+  const debouncedInputValue = useDebounce(inputValue, 300, () =>
+    setIsLoading(false)
+  );
 
-  const fetchMatches = async (query: string): Promise<Match[]> => {
-    const response = await fetch(
-      `https://restcountries.com/v3.1/name/${encodeURIComponent(query)}`
-    );
+  useEffect(() => {
+    const fetchData = async (): Promise<void> => {
+      setIsLoading(true);
+      const response = await fetch(API_ENDPOINT);
+      setIsLoading(false);
 
-    setIsLoading(false);
+      if (!response.ok) {
+        setData([]);
+      }
 
-    if (!response.ok) {
-      return [];
-    }
+      const countries = await response.json();
+      setData(countries);
+    };
 
-    const countries = await response.json();
+    fetchData();
+  }, []);
 
-    const cities = countries
+  const filterOptions = async (
+    data: CountryResponse[],
+    query: string
+  ): Promise<Match[]> => {
+    const cities = data
       .map((country: { name: { common: string } }) => country.name.common)
       .filter((capital: string) => capital);
 
@@ -44,18 +61,18 @@ const Home: NextPage = () => {
   };
 
   useEffect(() => {
-    const fetchData = async () => {
-      const results = await fetchMatches(debouncedInputValue);
+    const filterData = async () => {
+      const results = await filterOptions(data, debouncedInputValue);
       setOptions(results);
     };
 
     if (debouncedInputValue !== "") {
-      fetchData();
+      filterData();
     } else {
       setIsLoading(false);
       setOptions([]);
     }
-  }, [debouncedInputValue]);
+  }, [debouncedInputValue, data]);
 
   return (
     <div className="flex bg-[#15357a] flex-col items-center pt-[20%] min-h-screen py-2">
@@ -67,6 +84,7 @@ const Home: NextPage = () => {
           setInputValue(value);
         }}
         isLoading={isLoading}
+        isDisabled={data.length === 0 && isLoading}
         placeholder="Enter any country"
       />
     </div>
