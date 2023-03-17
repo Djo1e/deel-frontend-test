@@ -1,27 +1,18 @@
-# Next.js + Tailwind CSS Example
+# Next.js + Tailwind CSS Example Starter
 
-This example shows how to use [Tailwind CSS](https://tailwindcss.com/) [(v3.2)](https://tailwindcss.com/blog/tailwindcss-v3-2) with Next.js. It follows the steps outlined in the official [Tailwind docs](https://tailwindcss.com/docs/guides/nextjs).
+This is a basic Next.js application that has been set up with TypeScript and Tailwind CSS to showcase a `AutoComplete` component without the use of any 3rd party libraries.
 
-## Deploy your own
+## Getting Started
 
-Deploy the example using [Vercel](https://vercel.com?utm_source=github&utm_medium=readme&utm_campaign=next-example) or preview live with [StackBlitz](https://stackblitz.com/github/vercel/next.js/tree/canary/examples/with-tailwindcss)
+1. Install dependencies by running `yarn install`
+2. Start the dev server `yarn dev`
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/git/external?repository-url=https://github.com/vercel/next.js/tree/canary/examples/with-tailwindcss&project-name=with-tailwindcss&repository-name=with-tailwindcss)
+## Available Scripts
 
-## How to use
+1. `yarn dev`: Starts the development server.
+2. `yarn build`: Builds the application for production.
+3. `yarn start`: Starts the production server.
 
-Execute [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app) with [npm](https://docs.npmjs.com/cli/init), [Yarn](https://yarnpkg.com/lang/en/docs/cli/create/), or [pnpm](https://pnpm.io) to bootstrap the example:
+---
 
-```bash
-npx create-next-app --example with-tailwindcss with-tailwindcss-app
-```
-
-```bash
-yarn create next-app --example with-tailwindcss with-tailwindcss-app
-```
-
-```bash
-pnpm create next-app --example with-tailwindcss with-tailwindcss-app
-```
-
-Deploy it to the cloud with [Vercel](https://vercel.com/new?utm_source=github&utm_medium=readme&utm_campaign=next-example) ([Documentation](https://nextjs.org/docs/deployment)).
+**Hint**: Revert to this [commit](https://github.com/Djo1e/deel-frontend-test/commit/c9f60a684b28b7c6c6be1592f9e90855e7d968b2) to see the demo prior to the API integration.

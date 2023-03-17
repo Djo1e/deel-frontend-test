@@ -43,14 +43,14 @@
 
 1. Convert the class component to a functional component.
 2. Replace the state with `useState` hooks.
-3. Replace lifecycle methods with appropriate useEffect hooks.
+3. Replace lifecycle methods with appropriate `useEffect` hooks.
 
 ### 10. List a few ways styles can be used with components.
 
-1. Inline styles: Apply styles directly as an object in the style prop.
-2. CSS modules: Import scoped CSS classes and use them as className.
-3. Styled-components: Use JavaScript to create styled components with dynamic styling.
-4. Regular CSS or SASS/LESS: Use global or imported stylesheets.
+1. `Inline styles`: Apply styles directly as an object in the style prop.
+2. `CSS modules`: Import scoped CSS classes and use them as className.
+3. `Styled-components`: Use JavaScript to create styled components with dynamic styling.
+4. `Regular CSS or SASS/LESS`: Use global or imported stylesheets.
 
 ### 11. How to render an HTML string coming from the server.
 
