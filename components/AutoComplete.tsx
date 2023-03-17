@@ -116,7 +116,7 @@ export function AutoComplete({
   };
 
   return (
-    <div className="relative">
+    <div className="relative w-72">
       <input
         id="input"
         ref={inputRef}
@@ -125,30 +125,32 @@ export function AutoComplete({
         onFocus={() => setIsFocused(true)}
         onBlur={() => setIsFocused(false)}
         onKeyDown={handleKeyDown}
-        className="h-12 px-2 text-2xl rounded w-72"
+        className="w-full h-12 px-4 text-2xl border border-gray-300 rounded focus:border-blue-500 focus:outline-none transition-colors"
         placeholder={placeholder}
         disabled={isDisabled}
         autoComplete="off"
       />
       {isLoading && (
-        <div className="absolute right-0 top-1/2 transform -translate-x-1/2 -translate-y-1/2">
+        <div className="absolute right-4 top-1/2 transform -translate-y-1/2">
           <Spinner />
         </div>
       )}
       {isFocused && options.length > 0 ? (
         <ul
-          className="absolute w-full p-1 mt-2 overflow-y-auto bg-white rounded-sm min-h-20 max-h-80"
+          className="absolute z-10 w-full mt-1 overflow-y-auto bg-white rounded shadow-md min-h-20 max-h-80"
           id="suggestion-list"
         >
           {options.map((option, index) => (
             <li
               key={`${option.highlightedText}${option.remainingText}`}
-              className={index === activeIndex ? "bg-[#ED6A5A]" : ""}
+              className={`${
+                index === activeIndex ? "bg-blue-500 text-white" : ""
+              } hover:bg-blue-500 hover:text-white`}
               ref={(el) => (suggestionRefs.current[index] = el)}
             >
               <button
                 id="suggestion-item"
-                className="w-full px-1 text-left"
+                className="w-full px-4 py-2 text-left"
                 onClick={() => handleSuggestionClick(index)}
                 onMouseDown={(e) => e.preventDefault()}
               >
@@ -160,7 +162,7 @@ export function AutoComplete({
         </ul>
       ) : null}
       {input !== "" && !isLoading && options.length === 0 ? (
-        <div className="absolute w-full p-1 mt-2 overflow-y-scroll bg-white rounded-sm text-slate-500 min-h-20 max-h-60">
+        <div className="absolute z-10 w-full p-2 mt-1 overflow-y-scroll text-gray-600 bg-white rounded shadow-md min-h-20 max-h-60">
           No options
         </div>
       ) : null}
